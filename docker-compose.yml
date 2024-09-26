@@ -1,0 +1,34 @@
+version: '3'
+services:
+  backend:
+      build: ./backend
+      ports:
+        - 3000:3000
+      depends_on:
+        - mysql
+      networks:
+        capybara:
+          aliases:
+            - backend
+  mysql:
+    image: mysql:latest
+    container_name: my_mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: capydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      capybara:
+        aliases:
+          - capydb
+
+volumes:
+  mysql_data:
+
+networks:
+  capybara:
