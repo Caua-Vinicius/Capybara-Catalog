@@ -27,11 +27,7 @@ export class CapybaraController {
       };
     } catch (error) {
       console.error('Error creating capybara: ', error.message);
-      return {
-        statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        message: 'Failed to create capybara',
-        error: error.message || 'An unexpected error occurred',
-      };
+      throw new InternalServerErrorException('Failed to create capybaras');
     }
   }
 
@@ -46,11 +42,7 @@ export class CapybaraController {
       };
     } catch (error) {
       console.error('Error fetching capybaras: ', error.message);
-      return {
-        statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        message: 'Failed to fetch capybaras',
-        error: error.message || 'An unexpected error occurred',
-      };
+      throw new InternalServerErrorException('Failed to fetch capybaras');
     }
   }
 
