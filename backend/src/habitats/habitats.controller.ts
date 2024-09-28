@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { HabitatService } from './habitats.service';
 import { CreateHabitatDto } from './dtos/createHabitatDto';
 
@@ -41,6 +50,26 @@ export class HabitatController {
         message: 'Failed to fetch Habitats',
         error: error.message || 'An unexpected error occurred',
       };
+    }
+  }
+
+  @Get(':id')
+  async getHabitatByID(@Param('id') id: string) {
+    try {
+      const habitat = await this.habitatService.getHabitatByID(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Fetched habitat successfully ',
+        data: habitat,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(`Habitat with ID ${id} not found`);
+      }
+      console.error('Error fetching habitat by ID:', error.message);
+      throw new InternalServerErrorException(
+        'An error occurred while fetching the habitat',
+      );
     }
   }
 }

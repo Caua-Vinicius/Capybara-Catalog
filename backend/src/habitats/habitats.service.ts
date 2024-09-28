@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prismaService';
 import { CreateHabitatDto } from './dtos/createHabitatDto';
 import { Habitat } from '@prisma/client';
@@ -15,5 +15,17 @@ export class HabitatService {
   async getAllHabitats(): Promise<Habitat[]> {
     const habitats = await this.prisma.habitat.findMany();
     return habitats;
+  }
+
+  async getHabitatByID(id: string): Promise<Habitat> {
+    const habitat = await this.prisma.habitat.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    if (!habitat) {
+      throw new NotFoundException(`Capybara with ID ${id} not found`);
+    }
+    return habitat;
   }
 }
