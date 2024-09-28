@@ -41,4 +41,13 @@ export class CapybaraService {
     }
     return capybara;
   }
+
+  async deleteCapybara(id: string): Promise<Capybara> {
+    const capybara = await this.prisma.capybara.delete({
+      where: {
+        id: id,
+      },
+    });
+    return capybara;
+  }
 }

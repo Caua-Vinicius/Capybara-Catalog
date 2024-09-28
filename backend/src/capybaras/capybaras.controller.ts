@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Delete,
   HttpStatus,
   InternalServerErrorException,
   NotFoundException,
@@ -62,6 +63,24 @@ export class CapybaraController {
       console.error('Error fetching capybara by ID:', error.message);
       throw new InternalServerErrorException(
         'An error occurred while fetching the capybara',
+      );
+    }
+  }
+  @Delete(':id')
+  async deleteCapybara(@Param('id') id: string) {
+    try {
+      const deletedCapybara = await this.capybaraService.deleteCapybara(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Capybara deleted successfully',
+        data: deletedCapybara,
+      };
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Capybara with ID ${id} not found`);
+      }
+      throw new InternalServerErrorException(
+        'An error occurred while deleting capybara',
       );
     }
   }
