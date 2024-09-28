@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prismaService';
 import { CreateCapybaraDto } from './dtos/createCapybaraDto';
 import { Capybara } from '@prisma/client';
+import { UpdateCapybaraDto } from './dtos/updateCapybaraDto';
 
 @Injectable()
 export class CapybaraService {
@@ -46,6 +47,26 @@ export class CapybaraService {
     const capybara = await this.prisma.capybara.delete({
       where: {
         id: id,
+      },
+    });
+    return capybara;
+  }
+
+  async updateCapybara(
+    id: string,
+    updateCapybaraDto: UpdateCapybaraDto,
+  ): Promise<Capybara> {
+    const capybara = await this.prisma.capybara.update({
+      where: { id: id },
+      data: {
+        name: updateCapybaraDto.name,
+        age_years: updateCapybaraDto.age_years,
+        weight_kg: updateCapybaraDto.weight_kg,
+        health_status: updateCapybaraDto.health_status,
+        habitatId: updateCapybaraDto.habitatId,
+        behaviour: updateCapybaraDto.behaviour,
+        diet: updateCapybaraDto.diet,
+        observations: updateCapybaraDto.observations,
       },
     });
     return capybara;

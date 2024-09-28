@@ -8,9 +8,11 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
 } from '@nestjs/common';
 import { CapybaraService } from './capybaras.service';
 import { CreateCapybaraDto } from './dtos/createCapybaraDto';
+import { UpdateCapybaraDto } from './dtos/updateCapybaraDto';
 
 @Controller('capybaras')
 export class CapybaraController {
@@ -81,6 +83,31 @@ export class CapybaraController {
       }
       throw new InternalServerErrorException(
         'An error occurred while deleting capybara',
+      );
+    }
+  }
+
+  @Put('update/:id')
+  async updateCapybara(
+    @Param('id') id: string,
+    @Body() updateCapybaraDto: UpdateCapybaraDto,
+  ) {
+    try {
+      const updatedCapybara = await this.capybaraService.updateCapybara(
+        id,
+        updateCapybaraDto,
+      );
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Capybara updated successfully',
+        data: updatedCapybara,
+      };
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Capybara with ID ${id} not found`);
+      }
+      throw new InternalServerErrorException(
+        'An error occurred while updating capybara',
       );
     }
   }
