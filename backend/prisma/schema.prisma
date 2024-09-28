@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Capybara {
+  id            String   @id @default(uuid()) @db.Char(36)
+  name          String
+  age_years     Int
+  weight_kg     Int
+  health_status String
+  habitat       Habitat? @relation(fields: [habitatId], references: [id])
+  habitatId     String?  @db.Char(36)
+  behaviour     String
+  diet          String
+  observations  String
+}
+
+model Habitat {
+  id       String     @id @default(uuid()) @db.Char(36)
+  name     String
+  Capybara Capybara[]
+}
