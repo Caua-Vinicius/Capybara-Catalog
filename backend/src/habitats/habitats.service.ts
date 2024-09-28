@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prismaService';
 import { CreateHabitatDto } from './dtos/createHabitatDto';
 import { Habitat } from '@prisma/client';
+import { UpdateHabitatDto } from './dtos/updateHabitatDto';
 
 @Injectable()
 export class HabitatService {
@@ -36,5 +37,16 @@ export class HabitatService {
       },
     });
     return deletedHabitat;
+  }
+
+  async updateHabitat(
+    id: string,
+    updateHabitatDto: UpdateHabitatDto,
+  ): Promise<Habitat> {
+    const updatedHabitat = await this.prisma.habitat.update({
+      where: { id: id },
+      data: updateHabitatDto,
+    });
+    return updatedHabitat;
   }
 }

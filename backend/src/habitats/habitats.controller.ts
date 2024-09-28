@@ -8,9 +8,11 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
 } from '@nestjs/common';
 import { HabitatService } from './habitats.service';
 import { CreateHabitatDto } from './dtos/createHabitatDto';
+import { UpdateHabitatDto } from './dtos/updateHabitatDto';
 
 @Controller('habitats')
 export class HabitatController {
@@ -81,6 +83,31 @@ export class HabitatController {
       }
       throw new InternalServerErrorException(
         'An error occurred while deleting habitat',
+      );
+    }
+  }
+
+  @Put('update/:id')
+  async updateHabitat(
+    @Param('id') id: string,
+    @Body() updateHabitatDto: UpdateHabitatDto,
+  ) {
+    try {
+      const updatedHabitat = await this.habitatService.updateHabitat(
+        id,
+        updateHabitatDto,
+      );
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Habitat updated successfully',
+        data: updatedHabitat,
+      };
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Habitat with ID ${id} not found`);
+      }
+      throw new InternalServerErrorException(
+        'An error occurred while updating Habitat',
       );
     }
   }
