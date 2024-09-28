@@ -9,6 +9,7 @@ import {
   Param,
   Post,
   Put,
+  BadRequestException,
 } from '@nestjs/common';
 import { CapybaraService } from './capybaras.service';
 import { CreateCapybaraDto } from './dtos/createCapybaraDto';
@@ -68,6 +69,30 @@ export class CapybaraController {
       );
     }
   }
+
+  @Get('habitat/:habitatId')
+  async getCapybarasByHabitat(@Param('habitatId') habitatId: string) {
+    if (!habitatId || habitatId.trim() === '') {
+      throw new BadRequestException('The habitatId must be provided.');
+    }
+    try {
+      const capybaras =
+        await this.capybaraService.getCapybarasbyHabitat(habitatId);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Capybaras fetched successfully',
+        data: capybaras,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(`Habitat with ID ${habitatId} not found`);
+      }
+      throw new InternalServerErrorException(
+        'An error occurred while fetching capybara',
+      );
+    }
+  }
+
   @Delete('delete/:id')
   async deleteCapybara(@Param('id') id: string) {
     try {

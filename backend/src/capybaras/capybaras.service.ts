@@ -43,6 +43,28 @@ export class CapybaraService {
     return capybara;
   }
 
+  async getCapybarasbyHabitat(habitatId: string): Promise<Capybara[]> {
+    const habitat = await this.prisma.habitat.findUnique({
+      where: {
+        id: habitatId,
+      },
+    });
+
+    if (!habitat) {
+      throw new NotFoundException(`Habitat with ID ${habitatId} not found`);
+    }
+
+    const capybaras = await this.prisma.capybara.findMany({
+      where: {
+        habitatId: habitatId,
+      },
+      include: {
+        habitat: true,
+      },
+    });
+    return capybaras;
+  }
+
   async deleteCapybara(id: string): Promise<Capybara> {
     const capybara = await this.prisma.capybara.delete({
       where: {
