@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CapybaraService } from './capybaras.service';
 import { CreateCapybaraDto } from './dtos/createCapybaraDto';
 
@@ -42,6 +51,26 @@ export class CapybaraController {
         message: 'Failed to fetch capybaras',
         error: error.message || 'An unexpected error occurred',
       };
+    }
+  }
+
+  @Get(':id')
+  async getCapybaraById(@Param('id') id: string) {
+    try {
+      const capybara = await this.capybaraService.getCapybaraById(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Capybara fetched successfully',
+        data: capybara,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(`Capybara with ID ${id} not found`);
+      }
+      console.error('Error fetching capybara by ID:', error.message);
+      throw new InternalServerErrorException(
+        'An error occurred while fetching the capybara',
+      );
     }
   }
 }

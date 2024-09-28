@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prismaService';
 import { CreateCapybaraDto } from './dtos/createCapybaraDto';
 import { Capybara } from '@prisma/client';
@@ -28,5 +28,17 @@ export class CapybaraService {
   async getAllCapybaras(): Promise<Capybara[]> {
     const capybaras = await this.prisma.capybara.findMany();
     return capybaras;
+  }
+
+  async getCapybaraById(id: string): Promise<Capybara> {
+    const capybara = await this.prisma.capybara.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    if (!capybara) {
+      throw new NotFoundException(`Capybara with ID ${id} not found`);
+    }
+    return capybara;
   }
 }
