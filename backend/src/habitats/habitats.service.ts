@@ -28,4 +28,13 @@ export class HabitatService {
     }
     return habitat;
   }
+
+  async deleteHabitatByID(id: string): Promise<Habitat> {
+    const deletedHabitat = await this.prisma.habitat.delete({
+      where: {
+        id: id,
+      },
+    });
+    return deletedHabitat;
+  }
 }

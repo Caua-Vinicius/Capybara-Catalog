@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   InternalServerErrorException,
@@ -61,6 +62,25 @@ export class HabitatController {
       console.error('Error fetching habitat by ID:', error.message);
       throw new InternalServerErrorException(
         'An error occurred while fetching the habitat',
+      );
+    }
+  }
+
+  @Delete('delete/:id')
+  async deleteHabitat(@Param('id') id: string) {
+    try {
+      const deletedHabitat = await this.habitatService.deleteHabitatByID(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Deleted habitat successfully ',
+        data: deletedHabitat,
+      };
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Habtitat with ID ${id} not found`);
+      }
+      throw new InternalServerErrorException(
+        'An error occurred while deleting habitat',
       );
     }
   }
