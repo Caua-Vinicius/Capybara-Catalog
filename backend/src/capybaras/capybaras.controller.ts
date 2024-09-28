@@ -68,7 +68,7 @@ export class CapybaraController {
       );
     }
   }
-  @Delete(':id')
+  @Delete('delete/:id')
   async deleteCapybara(@Param('id') id: string) {
     try {
       const deletedCapybara = await this.capybaraService.deleteCapybara(id);
