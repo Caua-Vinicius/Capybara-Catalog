@@ -26,11 +26,7 @@ export class HabitatController {
       };
     } catch (error) {
       console.error('Error creating Habitat: ', error.message);
-      return {
-        statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        message: 'Failed to create Habitat',
-        error: error.message || 'An unexpected error occurred',
-      };
+      throw new InternalServerErrorException('Failed to create Habitat');
     }
   }
 
@@ -40,16 +36,12 @@ export class HabitatController {
       const habitats = await this.habitatService.getAllHabitats();
       return {
         statusCode: HttpStatus.OK,
-        message: 'Fetched all habitats ',
+        message: 'Fetched all habitats successfully',
         data: habitats,
       };
     } catch (error) {
-      console.error('Error fetching Habitats: ', error.message);
-      return {
-        statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        message: 'Failed to fetch Habitats',
-        error: error.message || 'An unexpected error occurred',
-      };
+      console.error('Error fetching habitats: ', error.message);
+      throw new InternalServerErrorException('Failed to fetch habitats');
     }
   }
 
